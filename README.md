@@ -1,2 +1,2 @@
 # cv-papers
-the reviews about Computer vision area
+the reviews of papers in the field of computer vision
