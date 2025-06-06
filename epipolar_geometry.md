@@ -1,6 +1,6 @@
 ## Epipolar Geometry
 <br>
-![](https://www.cs.auckland.ac.nz/courses/compsci773s1t/lectures/773-GG/figures/epipolar.gif)
+<img src="https://www.cs.auckland.ac.nz/courses/compsci773s1t/lectures/773-GG/figures/epipolar.gif">
 1. 정의: 두 개의 서로 다른 카메라에서 관찰된 3D 장면의 기하학적 관계를 설명하는 이론<br>
   1) Epipolar plane: 에피폴라 평면, 두 카메라 중심과 3D 점을 포함하는 평면<br>
   2) Epipolar line: 에피폴라 선, 한 이미지의 점에 대응하는 다른 이미지 상의 제약선<br>
