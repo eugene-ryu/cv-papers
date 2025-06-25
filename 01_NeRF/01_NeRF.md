@@ -17,8 +17,14 @@ continuous scenes은 5D vector-valued 함수로 나타냄<br>
 
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FbkbbeN%2FbtrJWMpVa6w%2FAAAAAAAAAAAAAAAAAAAAAGU_KSl7ElNSLVg7meiW6mk3fsXbrd932fxWiIpwOoyU%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1751295599%26allow_ip%3D%26allow_referer%3D%26signature%3DXItb5muhF7UgAoiAeMqYnNVehhw%253D)<br><br><br>
 
-#### MLP Network
+
+방향은 3D unit vector $$\mathbf{d}$$<br><br>
+아래는 MLP 네트워크의 수식<br>
 $$\mathbf{F}_{\theta} : (\mathbf{x}, \mathbf{d}) \rightarrow (\boldsymbol{c}, \sigma)$$<br><br>
+여기서 theta는 최적화 해야하는 weights를 나타냄<br><br>
+
+
+### Volume Rendering with Radiance Fields
 
 
 <br><br><br>
