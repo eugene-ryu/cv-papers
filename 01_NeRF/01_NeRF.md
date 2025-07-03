@@ -102,14 +102,7 @@ stratified sampling을 써서 N_c 위치들에 첫 샘플을 세팅함. 그리�
 이렇게 하는 것으로 수식(3)의 coarse 네트워크 $$\hat{C}_{c}^{r}$$로부터 알파 합성 색상을, 광선을 따라 모든 샘플링된 색상들 C_i의 weighted sum으로 썼다.<br><br>
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)<br><br><br>
 
-
-
-
-
-
-
-
-
+이 가중치들을 $$\hat{w}_{i}=\frac{w_{i}}{\sum_{j=1}^{N_{c}}}w_{j}$$ 이렇게 정규화하면 광선을 따라 부분적으로 일정한 pdf가 됨<br><br>
 
 
 
