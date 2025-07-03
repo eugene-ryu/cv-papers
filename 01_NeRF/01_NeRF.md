@@ -84,11 +84,23 @@ SOTA 달성을 위해 고화질의 복잡한 장면들 표현을 가능하게 �
 Rahaman et al.에선 추가적으로 네트워크에 넣기 전에 inputs를 고주파 함수를 사용해 더 높은 차원의 space로 매핑했는데, 고주파 variation을 담은 데이터를 네트워크는 더 잘 fitting<br><br>
 
 이러한 것들을 활용해서 $$f_{\theta}$$를 두 개 함수의 합성으로 재구성함<br><br>
-$$F_{\theta}=F_{\theta}^{`} \circ \gamma$$<br><br>
+$$F_{\theta}=F_{\theta}^{`}\circ \gamma$$<br><br>
 하나는 학습시키고 다른 하나는 학습을 안 하게 했는데 퍼포먼스가 상당히 향상됨, gamma는 R에서 R^{2L}로 매핑하는 것이고, F_{\theta}^{`}는 일반적인 MLP<br><br><br>
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FVHhK3%2FbtshRySxXA3%2FAAAAAAAAAAAAAAAAAAAAAOijxIw_7xqktsgUXG0Vum3JucbRDxY2Uq2-cmmCS7Sd%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DCXgTSRZRmUYV6mPRt%252BtVXLfJr2U%253D)<br><br><br>
+함수 gamma(.)를 [-1,1]안에 들어가도록 정규화된 x안의 3차원 값들 각각에 적용함, 그리고 Cartesian viewing direction 유닛 벡터 d([-1,1]안에 위치)의 세 구성 요소에도 각각 적용<br><br>
+
+실험에서 gamma(x)를 위한 L값은 10, gamma(d)를 위한 L값은 4<br><br>
+트랜스포머의 positional encoding과 NeRF의 positional encoding은 다름. input 시퀀스 토큰들의 discrete positions를 트랜스포머는 PE라고 하나, NeRF는 이 함수들을 continuous input 좌표들을 높은 차원의 space로 매핑하려고 씀. MLP가 더 쉽게 고주파 함수를 근사하게<br><br>
 
 
+#### Hierarchical volume sampling
+장면을 표현하기 위해 동시에 2개의 네트워크를 최적화함: coarse, fine<br><Br>
+
+stratified sampling을 써서 N_c 위치들에 첫 샘플을 세팅함. 그리고 이 위치들에서 수식(2),(3)에서 묘사한 것 처럼 coarse 네트워크를 향상시킴<br><br>
+
+이 coarse 네트워크의 output이 주어졌을 때, 각 광선을 따라 더 정보가 있는 샘플링을 생산함 (볼륨의 연관된 파트들을 따라 편향된 샘플들)<br><br>
+이렇게 하는 것으로 수식(3)의 coarse 네트워크 $$\hat{C}_{c}^{r}$$로부터 알파 합성 색상을, 광선을 따라 모든 샘플링된 색상들 C_i의 weighted sum으로 썼다.<br><br>
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)<br><br><br>
 
 
 
