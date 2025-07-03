@@ -69,8 +69,7 @@ stratified sampling은 구간을 나눈 뒤, 각 구간에서 무작위로 샘�
 - $$\delta_{i}=t_{i+1}-t_{i}$$ :인접한 샘플들간의 거리<br>
 - exp(-something): 흡수량이 많을수록 투과도는 급격히 감소<br>
 - $$1 - exp(\sigma_{i) \delta_{i})$$: 알파값, i번째 샘플에서 빛이 흡수되어 방출되는 비율<br>
-      $$\sigma_{i} \delta_{i}$$가 클수록 (즉, 밀도가 높거나 간격이 넓을수록) 이 값은 1에 가까워짐 (거의 다 흡수, 불투명)<br>
-      반면 위의 값이 작을수록 (밀도가 낮거나 간격이 좁으면) 이 값은 0에 가까워짐(거의 투명)<br><br>
+      $$\sigma_{i} \delta_{i}$$가 클수록 (즉, 밀도가 높거나 간격이 넓을수록) 이 값은 1에 가까워짐 (거의 다 흡수, 불투명) 반대로 이 값이 작을수록 (밀도가 낮거나 간격이 좁으면) 이 값은 0에 가까워짐(거의 투명)<br><br>
 - $$C_{i}$$: MLP의 출력, i번째 샘플 위치에서 방출되는 RGB 색상<br><br>
 
 각 샘플의 기여도 = (그 위치까지 도달할 확률) x (거기서 흡수되어 방출될 확률) x (그 위치의 색상)<br><br><br>
@@ -85,7 +84,7 @@ SOTA 달성을 위해 고화질의 복잡한 장면들 표현을 가능하게 �
 Rahaman et al.에선 추가적으로 네트워크에 넣기 전에 inputs를 고주파 함수를 사용해 더 높은 차원의 space로 매핑했는데, 고주파 variation을 담은 데이터를 네트워크는 더 잘 fitting<br><br>
 
 이러한 것들을 활용해서 $$f_{\theta}$$를 두 개 함수의 합성으로 재구성함<br><br>
-$$x^{2}+y^{2}+z^{2}$$<br><br>
+$$F_{\theta}=F_{\theta}^{`}\circ \gamma $$<br><br>
 하나는 학습시키고 다른 하나는 학습을 안 하게 했는데 퍼포먼스가 상당히 향상됨, gamma는 R에서 R^{2L}로 매핑하는 것이고, F_{\theta}^{`}는 일반적인 MLP<br><br><br>
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FVHhK3%2FbtshRySxXA3%2FAAAAAAAAAAAAAAAAAAAAAOijxIw_7xqktsgUXG0Vum3JucbRDxY2Uq2-cmmCS7Sd%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DCXgTSRZRmUYV6mPRt%252BtVXLfJr2U%253D)<br><br><br>
 
