@@ -59,9 +59,35 @@ Deterministic quadrature, 보통 이산화된 voxel grids를 렌더링할 때 �
 - N: 샘플링 구간내 bin의 개수<br>
 - i: 샘플 인덱스<br><br>
 
-stratified sampling은 구간을 나눈 뒤, 각 구간에서 무작위로 샘플을 뽑아 적분을 근사함. 균일하게 전체 구간을 커버하면서도 샘플 위치에 무작위성이 들어가 MLP가 더 다양한 위치에서 값을 예측하게 해줌, 결과적으로 더 부드럽고 노이즈가 적은 결과물이 나옴<br>
+stratified sampling은 구간을 나눈 뒤, 각 구간에서 무작위로 샘플을 뽑아 적분을 근사함. 균일하게 전체 구간을 커버하면서도 샘플 위치에 무작위성이 들어가 MLP가 더 다양한 위치에서 값을 예측하게 해줌, 결과적으로 더 부드럽고 노이즈가 적은 결과물이 나옴<br><br>
 
-<br>
+적분을 근사하려고 샘플들의 이산 집합을 쓰긴 하지만 stratified sampling은 continuous scene 표현이 가능하게 해줌. 왜냐면 결과적으로 MLP의 최적화 과정 중에서 continuous positions로 평가되니까<br><br>
+
+우리는 이 샘플들을 볼륨 렌더링에서 논의된 quadrature rule과 함께 C(r)을 측정하는데에 씀<br><br><br>
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)
+<br><br><br>
+- $$\delta_{i}=t_{i+1}-t_{i}$$ :인접한 샘플들간의 거리<br>
+- exp(- ): 흡수량이 많을수록 투과도는 급격히 감소<br>
+- $$1 - exp(\sigma_{i) \delta_{i})$$: 알파값, i번째 샘플에서 빛이 흡수되어 방출되는 비율<br>
+      $$\sigma_{i} \delta_{i}$$가 클수록 (즉, 밀도가 높거나 간격이 넓을수록) 이 값은 1에 가까워짐 (거의 다 흡수, 불투명)<br>
+      반면 위의 값이 작을수록 (밀도가 낮거나 간격이 좁으면) 이 값은 0에 가까워짐(거의 투명)<br><br>
+- $$C_{i}$$: MLP의 출력, i번째 샘플 위치에서 방출되는 RGB 색상<br><br>
+
+각 샘플의 기여도 = (그 위치까지 도달할 확률) x (거기서 흡수되어 방출될 확률) x (그 위치의 색상)<br><br><br>
+
+### Optimizing a Neural Radiance Field
+SOTA 달성을 위해 고화질의 복잡한 장면들 표현을 가능하게 해주는 2가지 개선점들<br><br>
+첫번째, MLP가 고주파 함수를 표현하는데 도움이 되는 input coordinate의 positional encoding<br>
+두번째, hierarchical sampling과정, 이게 고주파 표현에서 효율적인 샘플링을 가능하게 함<br><br><br>
+
+### Positional encoding
+신경망들이 universal function approximators 임에도 네트워크 $$F_{theta}$$를 입력좌표 $$xyz \theta \phi$$에 대해 직접적으로 동작시켜보는 건 렌더링 결과가 좋지 못함<br>
+Rahaman et al.에선 추가적으로 네트워크에 넣기 전에 inputs를 고주파 함수를 사용해 더 높은 차원의 space로 매핑했는데, 고주파 variation을 담은 데이터를 네트워크는 더 잘 fitting<br><br>
+
+이러한 것들을 활용해서 $$f_{\theta}$$를 두 개 함수의 합성으로 재구성함<br><br>
+$$x^{2}+y^{2}+z^{2}$$<br><br>
+하나는 학습시키고 다른 하나는 학습을 안 하게 했는데 퍼포먼스가 상당히 향상됨, gamma는 R에서 R^{2L}로 매핑하는 것이고, F_{\theta}^{`}는 일반적인 MLP<br><br><br>
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FVHhK3%2FbtshRySxXA3%2FAAAAAAAAAAAAAAAAAAAAAOijxIw_7xqktsgUXG0Vum3JucbRDxY2Uq2-cmmCS7Sd%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DCXgTSRZRmUYV6mPRt%252BtVXLfJr2U%253D)<br><br><br>
 
 
 
