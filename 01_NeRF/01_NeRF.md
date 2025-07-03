@@ -84,7 +84,7 @@ SOTA 달성을 위해 고화질의 복잡한 장면들 표현을 가능하게 �
 Rahaman et al.에선 추가적으로 네트워크에 넣기 전에 inputs를 고주파 함수를 사용해 더 높은 차원의 space로 매핑했는데, 고주파 variation을 담은 데이터를 네트워크는 더 잘 fitting<br><br>
 
 이러한 것들을 활용해서 $$f_{\theta}$$를 두 개 함수의 합성으로 재구성함<br><br>
-$$F_{\theta}=F_{\theta}^{`}\circ \gamma $$<br><br>
+$$F_{\theta}=F_{\theta}^{`} \circ \gamma$$<br><br>
 하나는 학습시키고 다른 하나는 학습을 안 하게 했는데 퍼포먼스가 상당히 향상됨, gamma는 R에서 R^{2L}로 매핑하는 것이고, F_{\theta}^{`}는 일반적인 MLP<br><br><br>
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FVHhK3%2FbtshRySxXA3%2FAAAAAAAAAAAAAAAAAAAAAOijxIw_7xqktsgUXG0Vum3JucbRDxY2Uq2-cmmCS7Sd%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DCXgTSRZRmUYV6mPRt%252BtVXLfJr2U%253D)<br><br><br>
 
