@@ -67,7 +67,7 @@ stratified sampling은 구간을 나눈 뒤, 각 구간에서 무작위로 샘�
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)
 <br><br><br>
 - $$\delta_{i}=t_{i+1}-t_{i}$$ :인접한 샘플들간의 거리<br>
-- exp(- ): 흡수량이 많을수록 투과도는 급격히 감소<br>
+- exp(-something): 흡수량이 많을수록 투과도는 급격히 감소<br>
 - $$1 - exp(\sigma_{i) \delta_{i})$$: 알파값, i번째 샘플에서 빛이 흡수되어 방출되는 비율<br>
       $$\sigma_{i} \delta_{i}$$가 클수록 (즉, 밀도가 높거나 간격이 넓을수록) 이 값은 1에 가까워짐 (거의 다 흡수, 불투명)<br>
       반면 위의 값이 작을수록 (밀도가 낮거나 간격이 좁으면) 이 값은 0에 가까워짐(거의 투명)<br><br>
