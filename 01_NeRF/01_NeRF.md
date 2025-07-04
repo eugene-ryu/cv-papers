@@ -116,7 +116,7 @@ stratified sampling을 써서 $$N_{c}$$ 위치들에 첫 샘플을 세팅함. �
 ##### 수식 (5)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)<br><br><br>
 
-이 가중치들을 $$\hat{w}_{i} = \frac{w_{i}}{\sum_{j=1}^{N_{c}} w_{j}}$$이렇게 정규화하면, 광선을 따라 부분적으로 일정한(piecewise-constant) PDF(Probability Density Function)가 됨<br><br>
+이 가중치들을 $$\hat{w}_{i}=\frac{w_{i}}{\sum_{j=1}^{N_{c}}}w_{j}$$ 이렇게 정규화하면, 광선을 따라 부분적으로 일정한(piecewise-constant) PDF(Probability Density Function)가 됨<br><br>
 
 inverse transform sampling을 써서 이 분포로부터 $$N_{f}$$ 위치들의 두번째 집합을 샘플링함. 첫번째와 두번째 샘플들의 합집합에서 fine 네트워크를 향상시킴. 그리고 수식 (3)을 사용해 모든 $$N_{c}+N_{f}$$ 샘플들을 써서 광선의 최종 렌더링된 색을 계산해냄.<br><br>
 
