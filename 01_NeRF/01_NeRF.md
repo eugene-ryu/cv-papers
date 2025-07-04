@@ -116,7 +116,7 @@ stratified sampling을 써서 $$N_{c}$$ 위치들에 첫 샘플을 세팅함. �
 ##### 수식 (5)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)<br><br><br>
 
-이 가중치들을 $$\hat{w}_{i}=\frac{w_{i}}{\sum_{j=1}^{N_{c}}}w_{j}$$ 이렇게 정규화하면 광선을 따라 부분적으로 일정한(piecewise-constant) PDF(Probability Density Function)가 됨<br><br>
+이 가중치들을 $$\hat{w}_{i} = \frac{w_{i}}{\sum_{j=1}^{N_{c}} w_{j}}$$이렇게 정규화하면, 광선을 따라 부분적으로 일정한(piecewise-constant) PDF(Probability Density Function)가 됨<br><br>
 
 inverse transform sampling을 써서 이 분포로부터 $$N_{f}$$ 위치들의 두번째 집합을 샘플링함. 첫번째와 두번째 샘플들의 합집합에서 fine 네트워크를 향상시킴. 그리고 수식 (3)을 사용해 모든 $$N_{c}+N_{f}$$ 샘플들을 써서 광선의 최종 렌더링된 색을 계산해냄.<br><br>
 
@@ -139,7 +139,7 @@ loss는 coarse + fine, 진짜 픽셀 색과 렌더링된 색상 사이의 total 
 ![](https://jaeyeol816.github.io/assets/images/nr1/Math3.png)<br><br><br>
 
 - $$R$$: 각 배치에 있는 광선들의 집합<br>
-최종 렌더링이 $$\bm{\hat{C}}_{f}(r)$$로부터 오더라도, $$\bm{\hat{C}}_{c}(r)$$의 loss도 줄여나간다. 그래서 coarse 네트워크로부터 온 weight distribution을 fine 네트워크 안에 할당한 샘플에도 쓸 수 있음.<br><br><br>
+최종 렌더링이 $$\hat{C}_{f}(r)$$로부터 오더라도, $$\hat{C}_{c}(r)$$의 loss도 줄여나간다. 그래서 coarse 네트워크로부터 온 weight distribution을 fine 네트워크 안에 할당한 샘플에도 쓸 수 있음.<br><br><br>
 
 실험에서는 광선들의 배치 사이즈 4096, coarse 볼륨에서 $$N_{c}=64$$ 좌표에서 각 샘플링, 그리고 fine 볼륨에서는 $$N_{f}=128$$ 추가 좌표들<br><br>
 
