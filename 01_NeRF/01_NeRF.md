@@ -48,12 +48,12 @@ volume density $$\sigma(x)$$는 위치 x에서의 무한소입자(infinitesimal 
 위는 volume rendering 공식<br>
 - $$\mathbf C(r(t))$$: 결과 색상<br>
 - $$[t_{n}, t_{f}]$$: 경계 중 근거리 near bound가 $$t_{n}$$, 원거리 far bound가 $$t_{f}$$<br>
-- T(t): transmittance, opacity, 투명도, 축적된 투과율을 나타내며, 광선이 t_n에서 t까지 다른 어떤 particle과 마주치는 일 없이 여행한 확률<br>
+- $$T(t)$$: transmittance, opacity, 투명도, 축적된 투과율을 나타내며, 광선이 $$t_{n}$$에서 $$t$$까지 다른 어떤 particle과 마주치는 일 없이 여행한 확률<br>
 - r: ray, 광선<br>
 - $$\sigma (r(t))$$: occupancy, volume density<br>
-- $$c(r(t), d)$$: radiance, 방사 복사도, 색상, 위치 r(t)에서 방향 d로 방출되는 빛의 색상 (3채널 RGB)<br><br>
+- $$c(r(t), d)$$: radiance, 방사 복사도, 색상, 위치 $$r(t)$$에서 방향 $$\mathbf {d}$$로 방출되는 빛의 색상 (3채널 RGB)<br><br>
 
-카메라 광선 r(t) = o + td인데, 이게 광선의 3차원 위치. o는 광선의 시작점, t는 광선위의 거리, d는 광선의 방향 unit vector<br><br>
+카메라 광선 $$r(t) = o + t \mathbf{d}$$인데, 이게 광선의 3차원 위치. o는 광선의 시작점, t는 광선위의 거리, d는 광선의 방향 unit vector<br><br>
 연속된 neural radiance field로부터 view를 렌더링하는 건, 가상의 카메라의 각 픽셀을 통과하고 추적하며 적분 C(r)을 계산해야함. 이 continuous integral을 quadrature를 사용해 추정<br><br>
 
 Deterministic quadrature, 보통 이산화된 voxel grids를 렌더링할 때 씀, 이는 항상 같은 위치에서만 샘플을 뽑기에 해상도 제한, aliasing 등 문제 발생<br>
@@ -71,7 +71,7 @@ stratified sampling은 구간을 나눈 뒤, 각 구간에서 무작위로 샘�
 
 적분을 근사하려고 샘플들의 이산 집합을 쓰긴 하지만 stratified sampling은 continuous scene 표현이 가능하게 해줌. 왜냐면 결과적으로 MLP의 최적화 과정 중에서 continuous positions로 평가되니까<br><br>
 
-우리는 이 샘플들을 볼륨 렌더링에서 논의된 quadrature rule과 함께 C(r)을 측정하는데에 씀.<br><br><br>
+우리는 이 샘플들을 볼륨 렌더링에서 논의된 quadrature rule과 함께 $$C(r)$$을 측정하는데에 씀.<br><br><br>
 
 ##### 수식 (3)
 ![](https://jaeyeol816.github.io/assets/images/nr1/Math2.png)
@@ -95,13 +95,13 @@ Rahaman et al.에선 추가적으로 네트워크에 넣기 전에 inputs를 고
 
 이러한 것들을 활용해서 $$f_{\theta}$$를 두 개 함수의 합성으로 재구성함<br><br>
 $$F_{\theta}=F_{\theta}^{'}\circ \gamma$$<br><br>
-하나는 학습시키고 다른 하나는 학습을 안 하게 했는데 퍼포먼스가 상당히 향상됨, gamma는 R에서 R^{2L}로 매핑하는 것이고, F_{\theta}^{'}는 일반적인 MLP<br><br><br>
+하나는 학습시키고 다른 하나는 학습을 안 하게 했는데 퍼포먼스가 상당히 향상됨, $$\gamma$$는 $$R$$에서 $$R^{2L}$$로 매핑하는 것이고, $$F_{\theta}^{'}$$는 일반적인 MLP<br><br><br>
 
 ##### 수식 (4)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FVHhK3%2FbtshRySxXA3%2FAAAAAAAAAAAAAAAAAAAAAOijxIw_7xqktsgUXG0Vum3JucbRDxY2Uq2-cmmCS7Sd%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DCXgTSRZRmUYV6mPRt%252BtVXLfJr2U%253D)<br><br><br>
-함수 gamma(.)를 [-1,1]안에 들어가도록 정규화된 x안의 3차원 값들 각각에 적용함, 그리고 Cartesian viewing direction 유닛 벡터 d([-1,1]안에 위치)의 세 구성 요소에도 각각 적용<br><br>
+함수 $$\gamma(.)$$를 [-1,1]안에 들어가도록 정규화된 x안의 3차원 값들 각각에 적용함, 그리고 Cartesian viewing direction 유닛 벡터 d([-1,1]안에 위치)의 세 구성 요소에도 각각 적용<br><br>
 
-실험에서 gamma(x)를 위한 L값은 10, gamma(d)를 위한 L값은 4<br><br>
+실험에서 $$\gamma(x)$$를 위한 L값은 10, $$gamma(d)$$를 위한 L값은 4<br><br>
 트랜스포머의 positional encoding과 NeRF의 positional encoding은 다름. input 시퀀스 토큰들의 discrete positions를 트랜스포머는 PE라고 하나, NeRF는 이 함수들을 continuous input 좌표들을 높은 차원의 space로 매핑하려고 씀. MLP가 더 쉽게 고주파 함수를 근사하게<br><br>
 
 
@@ -111,7 +111,7 @@ $$F_{\theta}=F_{\theta}^{'}\circ \gamma$$<br><br>
 stratified sampling을 써서 N_c 위치들에 첫 샘플을 세팅함. 그리고 이 위치들에서 수식(2),(3)에서 묘사한 것 처럼 coarse 네트워크를 향상시킴<br><br>
 
 이 coarse 네트워크의 output이 주어졌을 때, 각 광선을 따라 더 정보가 있는 샘플링을 생산함 (볼륨의 연관된 파트들을 따라 편향된 샘플들)<br><br>
-이렇게 하는 것으로 수식(3)의 coarse 네트워크 $$\hat{C}_{c}^{r}$$로부터 알파 합성 색상을, 광선을 따라 모든 샘플링된 색상들 C_i의 weighted sum으로 썼다.<br><br>
+이렇게 하는 것으로 수식(3)의 coarse 네트워크 $$\hat{C}_{c}^{r}$$로부터 알파 합성 색상을, 광선을 따라 모든 샘플링된 색상들 $$C_{i}$$의 weighted sum으로 썼다.<br><br>
 
 ##### 수식 (5)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)<br><br><br>
@@ -147,7 +147,7 @@ Adam optimizer 사용, $$5x10^{-4}$$에서 시작하는 learning rate, 그리고
 
 다른 hyperparameters는 기본으로 둠. $$\beta_{1}=0.9$$, $$\beta_{2}=0.999$$, $$\epsilon=10^{-7}$$<br><br><br>
 
-한 장면에 대한 최적화는, 엔비디아 GPU 하나로 1~2일, 100~30만번 iteration이 됨<br><br><br>
+한 장면에 대한 최적화는, NVIDIA GPU 하나로 1~2일, 100~30만번 iteration이 됨<br><br><br>
 
 #### 6. Results
 
