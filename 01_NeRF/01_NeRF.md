@@ -139,7 +139,7 @@ loss는 coarse + fine, 진짜 픽셀 색과 렌더링된 색상 사이의 total 
 ![](https://jaeyeol816.github.io/assets/images/nr1/Math3.png)<br><br><br>
 
 - $$R$$: 각 배치에 있는 광선들의 집합<br>
-최종 렌더링이 $$\boldsymbol{\hat{C}}_{f}(r)$$로부터 오더라도, $$\boldsymbol{\hat{C}}_{c}(r)$$의 loss도 줄여나간다. 그래서 coarse 네트워크로부터 온 weight distribution을 fine 네트워크 안에 할당한 샘플에도 쓸 수 있음.<br><br><br>
+최종 렌더링이 $$\bm{\hat{C}}_{f}(r)$$로부터 오더라도, $$\bm{\hat{C}}_{c}(r)$$의 loss도 줄여나간다. 그래서 coarse 네트워크로부터 온 weight distribution을 fine 네트워크 안에 할당한 샘플에도 쓸 수 있음.<br><br><br>
 
 실험에서는 광선들의 배치 사이즈 4096, coarse 볼륨에서 $$N_{c}=64$$ 좌표에서 각 샘플링, 그리고 fine 볼륨에서는 $$N_{f}=128$$ 추가 좌표들<br><br>
 
