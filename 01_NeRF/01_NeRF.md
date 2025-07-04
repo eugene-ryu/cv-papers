@@ -37,6 +37,8 @@ Fig 4에서도 보여지듯이 view dependence 없이 x만 넣어주고 학습�
 
 ### Volume Rendering with Radiance Fields
 volume density $$\sigma(x)$$는 위치 x에서의 무한소입자(infinitesimal particl)에서 광선이 끝나는 것에 대한 differential probability로 해석될 수 있다.<br><br>
+
+##### 수식 (1)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FbNKGYk%2Fbtshz1WTEgR%2FAAAAAAAAAAAAAAAAAAAAAB1UyGB_E0O8W02quKb_x8ck4RMjsQaEkKYwPuKm6TeE%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DDgAFXoBpWvjG5RZ5ljbiBbfGXvs%253D)<br><br><br>
 
 위는 volume rendering 공식<br>
@@ -52,6 +54,8 @@ volume density $$\sigma(x)$$는 위치 x에서의 무한소입자(infinitesimal 
 
 Deterministic quadrature, 보통 이산화된 voxel grids를 렌더링할 때 씀, 이는 항상 같은 위치에서만 샘플을 뽑기에 해상도 제한, aliasing 등 문제 발생<br>
 그래서 대신 $$[t_{n}, t_{f}]$$를 N개의 균일한 간격의 bins로 분할, 각 bin 내에서 무작위로 uniform dist.를 따라 하나의 샘플을 추출하는 stratified sampling 방식 사용.<br><br>
+
+##### 수식 (2)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FbTHjDG%2FbtshPpuIQsA%2FAAAAAAAAAAAAAAAAAAAAAMxU2OwsQKvM4eaUoBFL2_VjHdX0-Er8MfMIT2JeFWYC%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DJNxanzwKllO14A1LvKgFvTq79oM%253D)<br><br><br>
 - $$t_{i}$$: i번째 bin안에서 무작위로 뽑힌 샘플의 위치, 광선상의 거리<br>
 - U[a,b]: 구간 a,b에서 uniform distribution으로 무작위 샘플을 뽑음<br>
@@ -63,8 +67,10 @@ stratified sampling은 구간을 나눈 뒤, 각 구간에서 무작위로 샘�
 
 적분을 근사하려고 샘플들의 이산 집합을 쓰긴 하지만 stratified sampling은 continuous scene 표현이 가능하게 해줌. 왜냐면 결과적으로 MLP의 최적화 과정 중에서 continuous positions로 평가되니까<br><br>
 
-우리는 이 샘플들을 볼륨 렌더링에서 논의된 quadrature rule과 함께 C(r)을 측정하는데에 씀<br><br><br>
-![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)
+우리는 이 샘플들을 볼륨 렌더링에서 논의된 quadrature rule과 함께 C(r)을 측정하는데에 씀.<br><br><br>
+
+##### 수식 (3)
+![](https://jaeyeol816.github.io/assets/images/nr1/Math2.png)
 <br><br><br>
 - $$\delta_{i}=t_{i+1}-t_{i}$$ :인접한 샘플들간의 거리<br>
 - exp(-something): 흡수량이 많을수록 투과도는 급격히 감소<br>
@@ -86,6 +92,8 @@ Rahaman et al.에선 추가적으로 네트워크에 넣기 전에 inputs를 고
 이러한 것들을 활용해서 $$f_{\theta}$$를 두 개 함수의 합성으로 재구성함<br><br>
 $$F_{\theta}=F_{\theta}^{`}\circ \gamma$$<br><br>
 하나는 학습시키고 다른 하나는 학습을 안 하게 했는데 퍼포먼스가 상당히 향상됨, gamma는 R에서 R^{2L}로 매핑하는 것이고, F_{\theta}^{`}는 일반적인 MLP<br><br><br>
+
+##### 수식 (4)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FVHhK3%2FbtshRySxXA3%2FAAAAAAAAAAAAAAAAAAAAAOijxIw_7xqktsgUXG0Vum3JucbRDxY2Uq2-cmmCS7Sd%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DCXgTSRZRmUYV6mPRt%252BtVXLfJr2U%253D)<br><br><br>
 함수 gamma(.)를 [-1,1]안에 들어가도록 정규화된 x안의 3차원 값들 각각에 적용함, 그리고 Cartesian viewing direction 유닛 벡터 d([-1,1]안에 위치)의 세 구성 요소에도 각각 적용<br><br>
 
@@ -100,9 +108,13 @@ stratified sampling을 써서 N_c 위치들에 첫 샘플을 세팅함. 그리�
 
 이 coarse 네트워크의 output이 주어졌을 때, 각 광선을 따라 더 정보가 있는 샘플링을 생산함 (볼륨의 연관된 파트들을 따라 편향된 샘플들)<br><br>
 이렇게 하는 것으로 수식(3)의 coarse 네트워크 $$\hat{C}_{c}^{r}$$로부터 알파 합성 색상을, 광선을 따라 모든 샘플링된 색상들 C_i의 weighted sum으로 썼다.<br><br>
+
+##### 수식 (5)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2Fb3vomA%2FbtshChdyr9O%2FAAAAAAAAAAAAAAAAAAAAAF6QDa--tPnuhUzYpuJQj5w8b6-8DrevoSTOJUTkEH_g%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DFc98ckHZkVjm2fB8iUipDAIvi9A%253D)<br><br><br>
 
-이 가중치들을 $$\hat{w}_{i}=\frac{w_{i}}{\sum_{j=1}^{N_{c}}}w_{j}$$ 이렇게 정규화하면 광선을 따라 부분적으로 일정한 pdf가 됨<br><br>
+이 가중치들을 $$\hat{w}_{i}=\frac{w_{i}}{\sum_{j=1}^{N_{c}}}w_{j}$$ 이렇게 정규화하면 광선을 따라 부분적으로 일정한(piecewise-constant) PDF(Probability Density Function)가 됨<br><br>
+
+inverse transform sampling을 써서 이 분포로부터 N_f 위치들의 두번째 집합을 샘플링함. 첫번째와 두번째 샘플들의 합집합에서 fine 네트워크를 향상시킴. 
 
 
 
