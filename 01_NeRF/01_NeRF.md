@@ -6,13 +6,17 @@ output으로는 volume density와 해당 위치로부터 보았을 때 보여지
 
 결과물은 상당히 사실적인 Novel View Synthesis(NVS)를 보여줌<br><br>
 ![](https://kimjy99.github.io/assets/img/nerf/nerf-fig1.webp)<br><br><br>
+##### Explicit representation
+![](https://jaeyeol816.github.io/assets/images/nr1/Picture2.png)<br>
+##### Implicit representation
+![](https://jaeyeol816.github.io/assets/images/nr1/Picture3.png)<br><br>
 ### Contribution
 - 복잡한 기하의 연속 장면들을 나타내기 위한 접근법, 5D neural radiance fields은 재료, 기본 MLP 파라미터화<br>
 - 기존 볼륨 렌더링 방식을 미분가능하게 만들어, 일반적인 RGB 이미지만으로도 3D 장면 표현을 학습, 최적화할 수 있게 함 (NeRF 이전의 volume rendering procedure는 미분이 안되는게 보통이었으나, NeRF에서 미분 가능한 volume rendering으로 확장. 볼륨 렌더링 적분을 수치적으로 근사하고 이 과정을 MLP와 결합해 최종 이미지와의 차이를 역전파로 최적화할 수 있게 만듬)<br>
 - hierarchical sampling 전략을 통해, 신경망의 연산 자원을 실제로 오브젝트, 장면 정보가 있는 공간에 집중적으로 할당<br><br><br>
 <br>
 
-### Neural Radiance Field Scene Representation
+### 3. Neural Radiance Field Scene Representation
 
 continuous scenes은 5D vector-valued 함수로 나타냄<br>
 - [input] 3D location: $${x} = (x,y,z)$$<br>
@@ -35,7 +39,7 @@ $$\mathbf{F}_{\theta} : (\mathbf{x}, \mathbf{d}) \rightarrow (\boldsymbol{c}, \s
 
 Fig 4에서도 보여지듯이 view dependence 없이 x만 넣어주고 학습시킨 모델은 세부적인 부분들을 나타내기 어려워했다<br><br><br>
 
-### Volume Rendering with Radiance Fields
+### 4. Volume Rendering with Radiance Fields
 volume density $$\sigma(x)$$는 위치 x에서의 무한소입자(infinitesimal particle)에서 광선이 끝나는 것에 대한 differential probability로 해석될 수 있다.<br><br>
 
 ##### 수식 (1)
@@ -80,7 +84,7 @@ stratified sampling은 구간을 나눈 뒤, 각 구간에서 무작위로 샘�
 
 각 샘플의 기여도 = (그 위치까지 도달할 확률) x (거기서 흡수되어 방출될 확률) x (그 위치의 색상)<br><br><br>
 
-### Optimizing a Neural Radiance Field
+### 5. Optimizing a Neural Radiance Field
 SOTA 달성을 위해 고화질의 복잡한 장면들 표현을 가능하게 해주는 2가지 개선점들<br><br>
 첫번째, MLP가 고주파 함수를 표현하는데 도움이 되는 input coordinate의 positional encoding<br>
 두번째, hierarchical sampling과정, 이게 고주파 표현에서 효율적인 샘플링을 가능하게 함<br><br><br>
@@ -146,6 +150,25 @@ Adam optimizer 사용, $$5x10^{-4}$$에서 시작하는 learning rate, 그리고
 한 장면에 대한 최적화는, 엔비디아 GPU 하나로 1~2일, 100~30만번 iteration이 됨<br><br><br>
 
 #### 6. Results
+
+##### 6.1 데이터셋
+Synthetic renderings of objects<br>
+- Diffuse Synthetic 360<br>
+- Realistic Synthetic 360<br><br>
+
+DeepVoxels 데이터셋은 간단한 기하구조를 가진 네 개의 람베르트 오브젝트들을 담고 있고, 각 오브젝트는 상반구 관점에서 샘플링되고, 512x152 pixel로 렌더링됨 (입력은 479, 테스트때는 1000개 샘플 사용)<br><br>
+
+추가로 복잡한 기하구조를 갖고 있으면서 람베르트가 아닌 성질을 가진 물건들, 8개 오브젝트들의 pathtraced images 데이터셋을 만들었다. 6개는 상반구 관점에서 샘플링한 것을 렌더링했고, 2개는 전체 구의 관점에서 샘플링한 것을 렌더링 함<br><br>
+
+각 장면마다 100 views를 input으로 주려고 렌더링했고, 200개는 테스트를 위해 사용. 모두 800x800 pixels<br><br><br>
+
+Real images of complex scenes<br>
+대체로 앞을 보는 이미지들로 찍혀진 복잡한 Real-world 장면들에서 결과를 냄. 이 데이터셋들은 손에 들린 휴대폰들을 찍은 8장면으로 구성. 5개는 LLFF 논문으로부터 찍힌거고, 3개는 우리가 찍음. 20~62개 정도 이미지들이고, 이 중 1/8은 테스트용으로 hold out. 모든 이미지들은 1008x756 pixels<br><br><br>
+
+##### 6.2 Comparisons
+![](https://jaeyeol816.github.io/assets/images/nr1/Table1.png)<br><br><br>
+
+
 
 
 
