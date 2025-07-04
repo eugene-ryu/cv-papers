@@ -36,14 +36,14 @@ $$\mathbf{F}_{\theta} : (\mathbf{x}, \mathbf{d}) \rightarrow (\boldsymbol{c}, \s
 Fig 4에서도 보여지듯이 view dependence 없이 x만 넣어주고 학습시킨 모델은 세부적인 부분들을 나타내기 어려워했다<br><br><br>
 
 ### Volume Rendering with Radiance Fields
-volume density $$\sigma(x)$$는 위치 x에서의 무한소입자(infinitesimal particl)에서 광선이 끝나는 것에 대한 differential probability로 해석될 수 있다.<br><br>
+volume density $$\sigma(x)$$는 위치 x에서의 무한소입자(infinitesimal particle)에서 광선이 끝나는 것에 대한 differential probability로 해석될 수 있다.<br><br>
 
 ##### 수식 (1)
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FbNKGYk%2Fbtshz1WTEgR%2FAAAAAAAAAAAAAAAAAAAAAB1UyGB_E0O8W02quKb_x8ck4RMjsQaEkKYwPuKm6TeE%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DDgAFXoBpWvjG5RZ5ljbiBbfGXvs%253D)<br><br><br>
 
 위는 volume rendering 공식<br>
 - $$\mathbf C(r(t))$$: 결과 색상<br>
-- $$[t_{n}, t_{f}]$$$: 경계 중 근거리 near bound가 t_n, 원거리 far bound가 t_f<br>
+- $$[t_{n}, t_{f}]$$: 경계 중 근거리 near bound가 $$t_{n}$$, 원거리 far bound가 $$t_{f}$$<br>
 - T(t): transmittance, opacity, 투명도, 축적된 투과율을 나타내며, 광선이 t_n에서 t까지 다른 어떤 particle과 마주치는 일 없이 여행한 확률<br>
 - r: ray, 광선<br>
 - $$\sigma (r(t))$$: occupancy, volume density<br>
@@ -114,7 +114,38 @@ stratified sampling을 써서 N_c 위치들에 첫 샘플을 세팅함. 그리�
 
 이 가중치들을 $$\hat{w}_{i}=\frac{w_{i}}{\sum_{j=1}^{N_{c}}}w_{j}$$ 이렇게 정규화하면 광선을 따라 부분적으로 일정한(piecewise-constant) PDF(Probability Density Function)가 됨<br><br>
 
-inverse transform sampling을 써서 이 분포로부터 N_f 위치들의 두번째 집합을 샘플링함. 첫번째와 두번째 샘플들의 합집합에서 fine 네트워크를 향상시킴. 
+inverse transform sampling을 써서 이 분포로부터 $$N_{f}$$ 위치들의 두번째 집합을 샘플링함. 첫번째와 두번째 샘플들의 합집합에서 fine 네트워크를 향상시킴. 그리고 수식 (3)을 사용해 모든 $$N_{c}+N_{f}$$ 샘플들을 써서 광선의 최종 렌더링된 색을 계산해냄.<br><br>
+
+이 과정을 통해 실제 물체가 있다고 예측한 구역들에 더 샘플들을 할당, importance sampling과 같은 목표를 해결해 줌. 다만 NeRF에서는 importance sampling과 달리, 샘플을 전체 적분 구간(e.g. 광선 위의 구간)을 균일하지 않게 나누는 경계로 동작. 즉 중요한 부분은 촘촘하게 샘플링, 그렇지 않은 부분은 드문드문하게 샘플링하는 것이 가능.<br><br>
+
+또한 각 샘플은 해당 구간 내에서만 기여를 하며, discretization 된 적분 구간의 일부로 취급. 샘플 전체를 합쳐서 적분을 근사함.<br><br>
+
+#### Implementation Details
+각 장면에 대한, 분리된 neural continuous volume representation network를 최적화. 장면마다 캡쳐된 RGB 이미지들 데이터셋, 카메라 포즈들, 내부 파라미터들, 경계들(광선이 실제로 샘플링되는 구간의 경계)만이 요구됨<br><br>
+
+COLMAP structure-from-motion 패키지를 사용<br><br>
+
+각 최적화 iteration마다 fine 네트워크로부터 $$N_{c}+N_{f}$$ 샘플들을, coarse 네트워크로부터 $$N_{c}$$ 샘플들을 query하기 위해, hierarchical sampling을 함. 카메라 광선의 하나의 배치마다 무작위 샘플링<br><br>
+
+그리고 샘플들의 두 세트로부터 각 광선 색상 렌더링을 위해, volume rendering 과정 사용<br><br>
+
+loss는 coarse + fine, 진짜 픽셀 색과 렌더링된 색상 사이의 total squared error 사용<br><br>
+
+##### 수식 (6)
+![](https://jaeyeol816.github.io/assets/images/nr1/Math3.png)<br><br><br>
+
+- $$R$$: 각 배치에 있는 광선들의 집합<br>
+최종 렌더링이 $$\mathbf \hat{C}_{f}(r)$$로부터 오더라도, $$\mathbf \hat{C}_{c}(r)$$의 loss도 줄여나간다. 그래서 coarse 네트워크로부터 온 weight distribution을 fine 네트워크 안에 할당한 샘플에도 쓸 수 있음.<br><br><br>
+
+실험에서는 광선들의 배치 사이즈 4096, coarse 볼륨에서 $$N_{c}=64$$ 좌표에서 각 샘플링, 그리고 fine 볼륨에서는 $$N_{f}=128$$ 추가 좌표들<br><br>
+
+Adam optimizer 사용, $$5x10^{-4}$$에서 시작하는 learning rate, 그리고 최적화 코스 중 지수적으로 떨어져서(weight decay) $$5x10^{-5}$$까지 내려감<br><br>
+
+다른 hyperparameters는 기본으로 둠. $$\beta_{1}=0.9$$, $$\beta_{2}=0.999$$, $$\epsilon=10^{-7}$$<br><br><br>
+
+한 장면에 대한 최적화는, 엔비디아 GPU 하나로 1~2일, 100~30만번 iteration이 됨<br><br><br>
+
+#### 6. Results
 
 
 
