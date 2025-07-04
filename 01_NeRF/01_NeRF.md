@@ -90,7 +90,7 @@ SOTA 달성을 위해 고화질의 복잡한 장면들 표현을 가능하게 �
 두번째, hierarchical sampling과정, 이게 고주파 표현에서 효율적인 샘플링을 가능하게 함<br><br><br>
 
 ### Positional encoding
-신경망들이 universal function approximators 임에도 네트워크 $$F_{theta}$$를 입력좌표 $$xyz \theta \phi$$에 대해 직접적으로 동작시켜보는 건 렌더링 결과가 좋지 못함<br>
+신경망들이 universal function approximators 임에도 네트워크 $$F_{\theta}$$를 입력좌표 $$xyz \theta \phi$$에 대해 직접적으로 동작시켜보는 건 렌더링 결과가 좋지 못함<br>
 Rahaman et al.에선 추가적으로 네트워크에 넣기 전에 inputs를 고주파 함수를 사용해 더 높은 차원의 space로 매핑했는데, 고주파 variation을 담은 데이터를 네트워크는 더 잘 fitting<br><br>
 
 이러한 것들을 활용해서 $$f_{\theta}$$를 두 개 함수의 합성으로 재구성함<br><br>
@@ -101,14 +101,14 @@ $$F_{\theta}=F_{\theta}^{'}\circ \gamma$$<br><br>
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdna%2FVHhK3%2FbtshRySxXA3%2FAAAAAAAAAAAAAAAAAAAAAOijxIw_7xqktsgUXG0Vum3JucbRDxY2Uq2-cmmCS7Sd%2Fimg.png%3Fcredential%3DyqXZFxpELC7KVnFOS48ylbz2pIh7yKj8%26expires%3D1753973999%26allow_ip%3D%26allow_referer%3D%26signature%3DCXgTSRZRmUYV6mPRt%252BtVXLfJr2U%253D)<br><br><br>
 함수 $$\gamma(.)$$를 [-1,1]안에 들어가도록 정규화된 x안의 3차원 값들 각각에 적용함, 그리고 Cartesian viewing direction 유닛 벡터 d([-1,1]안에 위치)의 세 구성 요소에도 각각 적용<br><br>
 
-실험에서 $$\gamma(x)$$를 위한 L값은 10, $$gamma(d)$$를 위한 L값은 4<br><br>
+실험에서 $$\gamma(x)$$를 위한 L값은 10, $$\gamma(d)$$를 위한 L값은 4<br><br>
 트랜스포머의 positional encoding과 NeRF의 positional encoding은 다름. input 시퀀스 토큰들의 discrete positions를 트랜스포머는 PE라고 하나, NeRF는 이 함수들을 continuous input 좌표들을 높은 차원의 space로 매핑하려고 씀. MLP가 더 쉽게 고주파 함수를 근사하게<br><br>
 
 
 #### Hierarchical volume sampling
 장면을 표현하기 위해 동시에 2개의 네트워크를 최적화함: coarse, fine<br><Br>
 
-stratified sampling을 써서 N_c 위치들에 첫 샘플을 세팅함. 그리고 이 위치들에서 수식(2),(3)에서 묘사한 것 처럼 coarse 네트워크를 향상시킴<br><br>
+stratified sampling을 써서 $$N_{c}$$ 위치들에 첫 샘플을 세팅함. 그리고 이 위치들에서 수식(2),(3)에서 묘사한 것 처럼 coarse 네트워크를 향상시킴<br><br>
 
 이 coarse 네트워크의 output이 주어졌을 때, 각 광선을 따라 더 정보가 있는 샘플링을 생산함 (볼륨의 연관된 파트들을 따라 편향된 샘플들)<br><br>
 이렇게 하는 것으로 수식(3)의 coarse 네트워크 $$\hat{C}_{c}^{r}$$로부터 알파 합성 색상을, 광선을 따라 모든 샘플링된 색상들 $$C_{i}$$의 weighted sum으로 썼다.<br><br>
@@ -139,7 +139,7 @@ loss는 coarse + fine, 진짜 픽셀 색과 렌더링된 색상 사이의 total 
 ![](https://jaeyeol816.github.io/assets/images/nr1/Math3.png)<br><br><br>
 
 - $$R$$: 각 배치에 있는 광선들의 집합<br>
-최종 렌더링이 $$\mathbf \hat{C}_{f}(r)$$로부터 오더라도, $$\mathbf \hat{C}_{c}(r)$$의 loss도 줄여나간다. 그래서 coarse 네트워크로부터 온 weight distribution을 fine 네트워크 안에 할당한 샘플에도 쓸 수 있음.<br><br><br>
+최종 렌더링이 $$\boldsymbol \hat{C}_{f}(r)$$로부터 오더라도, $$\boldsymbol \hat{C}_{c}(r)$$의 loss도 줄여나간다. 그래서 coarse 네트워크로부터 온 weight distribution을 fine 네트워크 안에 할당한 샘플에도 쓸 수 있음.<br><br><br>
 
 실험에서는 광선들의 배치 사이즈 4096, coarse 볼륨에서 $$N_{c}=64$$ 좌표에서 각 샘플링, 그리고 fine 볼륨에서는 $$N_{f}=128$$ 추가 좌표들<br><br>
 
@@ -167,15 +167,6 @@ Real images of complex scenes<br>
 
 ##### 6.2 Comparisons
 ![](https://jaeyeol816.github.io/assets/images/nr1/Table1.png)<br><br><br>
-
-
-
-
-
-
-
-
-
 
 
 
