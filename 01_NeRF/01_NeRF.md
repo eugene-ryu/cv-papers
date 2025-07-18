@@ -86,7 +86,7 @@ stratified sampling은 구간을 나눈 뒤, 각 구간에서 무작위로 샘�
 
 ### 5. Optimizing a Neural Radiance Field
 SOTA 달성을 위해 고화질의 복잡한 장면들 표현을 가능하게 해주는 2가지 개선점들<br><br>
-첫번째, MLP가 고주파 함수를 표현하는데 도움이 되는 input coordinate의 positional encoding<br>
+첫째, MLP가 고주파 함수를 표현하는데 도움이 되는 input coordinate의 positional encoding<br>
 두번째, hierarchical sampling과정, 이게 고주파 표현에서 효율적인 샘플링을 가능하게 함<br><br><br>
 
 ### Positional encoding
@@ -147,7 +147,7 @@ Adam optimizer 사용, $$5x10^{-4}$$에서 시작하는 learning rate, 그리고
 
 다른 hyperparameters는 기본으로 둠. $$\beta_{1}=0.9$$, $$\beta_{2}=0.999$$, $$\epsilon=10^{-7}$$<br><br><br>
 
-한 장면에 대한 최적화는, NVIDIA GPU 하나로 1~2일, 100~30만번 iteration이 됨<br><br><br>
+한 장면에 대한 최적화는, NVIDIA GPU 하나로 1-2일, 100-30만번 iteration이 됨<br><br><br>
 
 #### 6. Results
 
